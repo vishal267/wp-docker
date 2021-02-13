@@ -22,9 +22,11 @@ pipeline {
       steps{
         script {
                sh '''
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'mycreds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+        sed -i s/encrypted_password/$PASSWORD/ wp-config.php
         docker rm -f wordpress
         sleep 20 
-        docker run --name wordpress  --network=wordpress_n/w  -d -v "$PWD/":/var/www/html -p 80:80 
+        docker run --name wordpress  --network=wordpress_n/w  -d -v "$PWD/":/var/www/html -p 80:80 wp:latest
         '''
 
           }
